@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workingchild</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            text-align: left;
+        }
+        .btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .btn:hover:enabled {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>노동 인권 보장 설문지</h1>
+
+        <!-- 문항들 -->
+        <div class="question">
+            <p>1. 현재 받고 있는 시급이 9860원 이상인가요?</p>
+            <label><input type="radio" name="q1" value="yes1" onchange="checkCompletion()"> 예</label>
+            <label><input type="radio" name="q1" value="no1" onchange="checkCompletion()"> 아니오</label>
+        </div>
+        <div class="question">
+            <p>2. 4시간마다 30분씩 쉬는 시간이 있나요?</p>
+            <label><input type="radio" name="q2" value="yes2" onchange="checkCompletion()"> 예</label>
+            <label><input type="radio" name="q2" value="no2" onchange="checkCompletion()"> 아니오</label>
+        </div>
+        <div class="question">
+            <p>3. 고용주로부터 폭언이나 욕설을 경험한 적이 있나요?</p>
+            <label><input type="radio" name="q3" value="yes3" onchange="checkCompletion()"> 예</label>
+            <label><input type="radio" name="q3" value="no3" onchange="checkCompletion()"> 아니오</label>
+        </div>
+        <div class="question">
+            <p>4. 근로계약서를 작성했나요?</p>
+            <label><input type="radio" name="q4" value="yes4" onchange="checkCompletion()"> 예</label>
+            <label><input type="radio" name="q4" value="no4" onchange="checkCompletion()"> 아니오</label>
+        </div>
+        <div class="question">
+            <p>5. 업무 외에 부당한 지시를 받은 경험이 있나요?</p>
+            <label><input type="radio" name="q5" value="yes5" onchange="checkCompletion()"> 예</label>
+            <label><input type="radio" name="q5" value="no5" onchange="checkCompletion()"> 아니오</label>
+        </div>
+
+        <!-- 완료 버튼 -->
+        <button class="btn" id="submitButton" disabled onclick="showResults()">완료</button>
+
+        <!-- 결과 출력 -->
+        <div id="result" class="result"></div>
+
+        <!-- 처음으로 버튼 -->
+        <button class="btn" id="resetButton" style="display: none;" onclick="resetSurvey()">처음으로</button>
+    </div>
+
+    <script>
+        const messages = {
+            q1: { yes1: "당신은 법정 최저시급을 준수하는 근무 환경에 있습니다.", no1: "최저시급이 미준수되고 있으니 확인이 필요합니다." },
+            q2: { yes2: "정해진 휴게 시간을 잘 지키고 있습니다.", no2: "휴게 시간 준수가 이루어지지 않고 있습니다." },
+            q3: { yes3: "폭언이나 욕설은 명백한 노동법 위반입니다.", no3: "긍정적인 근무 환경이 유지되고 있습니다." },
+            q4: { yes4: "근로계약서 작성으로 권리를 보호받고 있습니다.", no4: "근로계약서 미작성은 법적 문제의 소지가 있습니다." },
+            q5: { yes5: "부당한 업무 지시는 거부할 권리가 있습니다.", no5: "정당한 업무만 수행 중입니다." }
+        };
+
+        function checkCompletion() {
+            const questions = ['q1', 'q2', 'q3', 'q4', 'q5'];
+            const allSelected = questions.every(q => document.querySelector(`input[name="${q}"]:checked`));
+            document.getElementById('submitButton').disabled = !allSelected;
+        }
+
+        function showResults() {
+            const questions = ['q1', 'q2', 'q3', 'q4', 'q5'];
+            const results = questions.map(q => {
+                const selected = document.querySelector(`input[name="${q}"]:checked`).value;
+                return messages[q][selected];
+            });
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = results.map(r => `<p>${r}</p>`).join('');
+            
+            document.getElementById('resetButton').style.display = 'block'; // "처음으로" 버튼 표시
+        }
+
+        function resetSurvey() {
+            document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false); // 선택 해제
+            document.getElementById('result').innerHTML = ''; // 결과 영역 초기화
+            document.getElementById('submitButton').disabled = true; // 완료 버튼 비활성화
+            document.getElementById('resetButton').style.display = 'none'; // "처음으로" 버튼 숨기기
+        }
+    </script>
+</body>
+</html>
